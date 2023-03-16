@@ -1,0 +1,10 @@
+.idea
+venv/
+__pycache__/
+reports/
+.pytest_cache
+debug.py
+env.bat
+*.png
+*.pyc
+*.log
