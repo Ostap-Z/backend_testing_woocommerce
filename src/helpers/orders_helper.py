@@ -1,6 +1,8 @@
 import json
 import os
 
+import allure
+
 from src.utilities.requests_utility import RequestsUtility
 
 
@@ -20,26 +22,44 @@ class OrdersHelper:
             "data",
             "create_order_payload.json"
         )
-        with open(payload_template) as file:
-            payload = json.load(file)
 
-        if additional_args:
-            self.check_object_type(additional_args, dict)
-            payload.update(additional_args)
+        with allure.step(
+            f"Open a file {payload_template} and deserialize it"
+        ):
+            with open(payload_template) as file:
+                payload = json.load(file)
 
-        return self.request_utility.post(
-            "orders",
-            payload=payload,
-            expected_status_code=201
-        )
+        with allure.step(
+          "Check if additional_args included into payload"
+        ):
+            if additional_args:
+                self.check_object_type(additional_args, dict)
+
+                with allure.step(
+                    "Add additional_args to the payload: "
+                    f"{additional_args=}"
+                ):
+                    payload.update(additional_args)
+
+        with allure.step(
+            f"Create an order with payload: {payload}"
+        ):
+            return self.request_utility.post(
+                "orders",
+                payload=payload,
+                expected_status_code=201
+            )
 
     @staticmethod
     def check_object_type(
             obj,
             expected_type
     ):
-        if not isinstance(obj, expected_type):
-            raise TypeError(
-                "Invalid type for object. "
-                f"Expected type is {expected_type}"
-            )
+        with allure.step(
+          f"Check if object type equals to {expected_type}"
+        ):
+            if not isinstance(obj, expected_type):
+                raise TypeError(
+                    "Invalid type for object. "
+                    f"Expected type is {expected_type}"
+                )

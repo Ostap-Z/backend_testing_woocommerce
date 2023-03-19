@@ -18,13 +18,18 @@ class ProductsDAO:
         SELECT * FROM local.wp_posts
         WHERE post_type=%s;
         """
-        random_product = self.__db_helper.execute_select(sql_query, "product")
-        return random_product[
+        random_products = self.__db_helper.execute_select(sql_query, "product")
+        random_product = random_products[
             random.randint(
                 1,
-                len(random_product)
+                len(random_products)
             )
         ]
+
+        with allure.step(
+            f"Get a random product: {random_product}"
+        ):
+            return random_product
 
     def get_product_by_id(self, product_id):
         sql_query = """
