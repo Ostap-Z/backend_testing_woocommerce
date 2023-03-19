@@ -72,7 +72,9 @@ class TestGetProducts:
                 "\nActual result:" \
                 "\n\tProduct name in the API response " \
                 "doesn't match a product name in the database: " \
-                f"\n\t{product_id_db=}, {product_db_name=}, {product_api_name=}" \
+                f"\n\t{product_id_db=}, " \
+                f"\n\t{product_db_name=}, " \
+                f"\n\t{product_api_name=}" \
                 "\nExpected result:" \
                 "\n\tProduct name in the API response " \
                 "should be matched with a product name in the database"

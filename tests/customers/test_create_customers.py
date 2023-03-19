@@ -136,12 +136,12 @@ class TestCreateCustomers:
             "Verify that the message in API response is correct"
         ):
             assert customer_api_info["message"] == \
-                   'An account is already registered with your email address. ' \
-                   '<a href="#" class="showlogin">Please log in.</a>', \
-                   "\nActual result:" \
-                   f"\n\tActual response 'message' is not correct: " \
-                   f"{customer_api_info['message']}" \
-                   "\nExpected result:" \
-                   "\n\tExpected response 'message' should be equaled to: " \
-                   "'An account is already registered with your email address. " \
-                   "<a href='#' class='showlogin'>Please log in.</a>'"
+                'An account is already registered with your email address. ' \
+                '<a href="#" class="showlogin">Please log in.</a>', \
+                "\nActual result:" \
+                f"\n\tActual response 'message' is not correct: " \
+                f"{customer_api_info['message']}" \
+                "\nExpected result:" \
+                "\n\tExpected response 'message' should be equaled to: " \
+                "'An account is already registered with your email address. " \
+                "<a href='#' class='showlogin'>Please log in.</a>'"
