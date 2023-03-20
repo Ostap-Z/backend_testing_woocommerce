@@ -5,6 +5,7 @@ import allure
 
 from src.dao.products_dao import ProductsDAO
 from src.helpers.orders_helper import OrdersHelper
+from src.dao.orders_dao import OrdersDAO
 
 
 @allure.suite("Orders endpoint")
@@ -12,6 +13,7 @@ from src.helpers.orders_helper import OrdersHelper
 @pytest.mark.orders
 class TestCreateOrder:
     product_dao = ProductsDAO()
+    orders_dao = OrdersDAO()
     orders_helper = OrdersHelper()
 
     @allure.title(
@@ -117,3 +119,83 @@ class TestCreateOrder:
                 "\nExpected result:" \
                 "\n\tExpected amount of bought items " \
                 f"should be {product_amount}"
+
+    @allure.title(
+        "Verify that the created order exists in DB"
+    )
+    @allure.severity(
+        severity_level=allure.severity_level.CRITICAL
+    )
+    @pytest.mark.tcid50
+    def test_verify_created_order_exist_db(self):
+        with allure.step("Get random product from DB"):
+            product_db = self.product_dao.get_random_product()
+
+        with allure.step(
+            f"Get a product id from random product: {product_db['ID']}"
+        ):
+            product_id = product_db["ID"]
+
+        product_info = {
+            "line_items": [
+                {
+                    "product_id": product_id,
+                    "quantity": random.randint(1, 10)
+                }
+            ]
+        }
+
+        with allure.step(
+          f"Create an order with additional args: {product_info}"
+        ):
+            order = self.orders_helper.create_order(
+                additional_args=product_info
+            )
+
+        with allure.step(
+            f"Get a 'id' from API response: {order['id']}"
+        ):
+            order_id = order['id']
+
+        with allure.step(
+            "Get a general info about an order "
+            f"with 'order_id' {order_id} from DB"
+        ):
+            line_info = \
+                self.orders_dao.get_order_items_by_order_id(order_id)
+
+        with allure.step(
+          "Get the 'line_items' from an order "
+          f"with 'order_id' {order_id}"
+        ):
+            line_items = [
+                i for i in line_info
+                if i["order_item_type"] == "line_item"
+            ]
+
+        with allure.step(
+            f"Get an order line id: {line_items[0]['order_item_id']}"
+        ):
+            line_id = line_items[0]['order_item_id']
+
+        with allure.step(
+          f"Get an order details for the 'line_id' {line_id}"
+        ):
+            line_details = self.orders_dao.get_order_items_details(line_id)
+
+        with allure.step(
+          f"Get a product id from DB: {line_details['_product_id']}"
+        ):
+            product_id_db = int(line_details["_product_id"])
+
+        with allure.step(
+          "Verify that the 'product_id' in DB "
+          "equals to the sent 'product_id' by API: "
+          f"{product_id_db=}, {product_id=}"
+        ):
+            assert product_id_db == product_id, \
+                "\nActual result:" \
+                "\n\tProduct_id in DB doesn't match a product_id in API: " \
+                f"{product_id_db=}, {product_id=}" \
+                "\nExpected result:" \
+                f"\n\tProduct_id in DB should be equaled to {product_id}"
