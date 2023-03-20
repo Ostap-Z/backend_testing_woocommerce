@@ -27,3 +27,27 @@ class OrdersDAO:
                 sql_query,
                 order_id
             )
+
+    def get_order_items_details(
+            self,
+            line_id
+    ):
+        sql_query = """
+        SELECT * 
+        FROM local.wp_woocommerce_order_itemmeta
+        WHERE order_item_id = %s;
+        """
+        sql_response = self.__db_helper.execute_select(
+                sql_query,
+                line_id
+            )
+
+        line_details = dict()
+        for meta in sql_response:
+            line_details[meta["meta_key"]] = meta["meta_value"]
+
+        with allure.step(
+                f"Get an order line details with 'line_id' {line_id}: "
+                f"{line_details}"
+        ):
+            return line_details
