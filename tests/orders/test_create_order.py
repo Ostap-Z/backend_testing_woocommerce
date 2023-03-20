@@ -264,4 +264,3 @@ class TestCreateOrder:
                 "\n\tNew created customer id should be provided " \
                 "while creating an order. " \
                 f"\n\tExpected customer id: {new_customer_id}"
-        import pdb; pdb.set_trace()
