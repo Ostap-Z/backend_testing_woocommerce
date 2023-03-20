@@ -33,7 +33,7 @@ class OrdersDAO:
             line_id
     ):
         sql_query = """
-        SELECT * 
+        SELECT *
         FROM local.wp_woocommerce_order_itemmeta
         WHERE order_item_id = %s;
         """
