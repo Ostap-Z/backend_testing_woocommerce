@@ -4,8 +4,9 @@ import pytest
 import allure
 
 from src.dao.products_dao import ProductsDAO
-from src.helpers.orders_helper import OrdersHelper
 from src.dao.orders_dao import OrdersDAO
+from src.helpers.customers_helper import CustomerHelper
+from src.helpers.orders_helper import OrdersHelper
 
 
 @allure.suite("Orders endpoint")
@@ -15,6 +16,7 @@ class TestCreateOrder:
     product_dao = ProductsDAO()
     orders_dao = OrdersDAO()
     orders_helper = OrdersHelper()
+    customers_helper = CustomerHelper()
 
     @allure.title(
         "Verify that the guest user has an opportunity to create an order"
@@ -199,3 +201,67 @@ class TestCreateOrder:
                 f"{product_id_db=}, {product_id=}" \
                 "\nExpected result:" \
                 f"\n\tProduct_id in DB should be equaled to {product_id}"
+
+    @allure.title(
+        "Verify that the new user has an opportunity to create an order"
+    )
+    @allure.severity(
+        severity_level=allure.severity_level.CRITICAL
+    )
+    @pytest.mark.tcid51
+    def test_create_order_new_user(self):
+        with allure.step("Get random product from DB"):
+            product_db = self.product_dao.get_random_product()
+
+        with allure.step(
+            f"Get a product id: {product_db['ID']}"
+        ):
+            product_id = product_db["ID"]
+
+        with allure.step(
+          "Create a new customer"
+        ):
+            new_customer = self.customers_helper.create_customer()
+
+        with allure.step(
+            f"Get a new created customer id: {new_customer['id']}"
+        ):
+            new_customer_id = new_customer["id"]
+
+        product_info = {
+            "line_items": [
+                {
+                    "product_id": product_id,
+                    "quantity": random.randint(1, 10)
+                }
+            ],
+            "customer_id": new_customer_id
+        }
+
+        with allure.step(
+          f"Create an order with additional args: {product_info}"
+        ):
+            order = self.orders_helper.create_order(
+                additional_args=product_info
+            )
+
+        with allure.step(
+          f"Get a 'customer_id' from API response: {order['customer_id']}"
+        ):
+            customer_id_api_response = order["customer_id"]
+
+        with allure.step(
+          "Verify that the customer id in created order API response "
+          "equals to the new created customer id: "
+          f"{customer_id_api_response=}, {new_customer_id=}"
+        ):
+            assert customer_id_api_response == new_customer_id, \
+                "\nActual result:" \
+                "\n\tCustomer id of created order in API response " \
+                "doesn't match the new created customer id." \
+                f"\n\tActual customer id: {customer_id_api_response}" \
+                "\nExpected result:" \
+                "\n\tNew created customer id should be provided " \
+                "while creating an order. " \
+                f"\n\tExpected customer id: {new_customer_id}"
+        import pdb; pdb.set_trace()
