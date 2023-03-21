@@ -48,7 +48,8 @@ class TestCreateProducts:
 
         with allure.step(
           "Verify that product name in API response "
-          "is equal to the name in payload"
+          "is equal to the name in payload: "
+          f"{product_response_name=}, {payload_name=}"
         ):
             assert product_response_name == payload_name, \
                 "\nActual result: " \

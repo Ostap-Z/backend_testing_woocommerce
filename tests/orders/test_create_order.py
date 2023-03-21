@@ -112,7 +112,8 @@ class TestCreateOrder:
             product_amount_response = len(order['line_items'])
 
         with allure.step(
-          "Verify that products amount in API response the same as sent"
+          "Verify that products amount in API response the same as sent: "
+          f"{product_amount_response=}, {product_amount=}"
         ):
             assert product_amount_response == product_amount, \
                 "\nActual result:" \
@@ -191,9 +192,8 @@ class TestCreateOrder:
             product_id_db = int(line_details["_product_id"])
 
         with allure.step(
-          "Verify that the 'product_id' in DB "
-          "equals to the sent 'product_id' by API: "
-          f"{product_id_db=}, {product_id=}"
+          "Verify that the 'product_id' in API Response "
+          f"the same as in DB: {product_id_db=}, {product_id=}"
         ):
             assert product_id_db == product_id, \
                 "\nActual result:" \

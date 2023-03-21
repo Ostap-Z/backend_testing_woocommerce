@@ -66,7 +66,8 @@ class TestGetProducts:
 
         with allure.step(
             f"Verify that the product name with id '{product_id_db}' "
-            f"in API response equals to the post_title in DB"
+            "in API response equals to the post_title in DB: "
+            f"{product_api_name=}, {product_db_name=}"
         ):
             assert product_api_name == product_db_name, \
                 "\nActual result:" \
@@ -122,7 +123,8 @@ class TestGetProducts:
             )
 
         with allure.step(
-          "Verify that API IDs in response equals to the DB IDs response"
+          "Verify that API IDs in response equals to the DB IDs response: "
+          f"{api_items_ids=}, {db_items_ids=}"
         ):
             assert api_items_ids == db_items_ids, \
                 "\nActual result:" \

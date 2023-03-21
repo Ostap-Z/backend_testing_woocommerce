@@ -27,13 +27,18 @@ class TestCreateCustomers:
     def test_create_customer_email(self):
         email = generate_random_email()
         password = generate_random_password()
-        customer_api_info = self.customer_helper.create_customer(
-            email=email,
-            password=password
-        )
 
         with allure.step(
-            f"Verify that API response email equals to the '{email}'"
+            f"Create a customer with email: {email}"
+        ):
+            customer_api_info = self.customer_helper.create_customer(
+                email=email,
+                password=password
+            )
+
+        with allure.step(
+            f"Verify that API response email equals to the '{email}': "
+            f"{customer_api_info['email']=}, {email=}"
         ):
             assert customer_api_info["email"] == email, \
                 f"\nActual email: {customer_api_info['email']}" \
@@ -49,10 +54,14 @@ class TestCreateCustomers:
     def test_create_customer_username(self):
         email = generate_random_email()
         password = generate_random_password()
-        customer_api_info = self.customer_helper.create_customer(
-            email=email,
-            password=password
-        )
+
+        with allure.step(
+            f"Create a customer with email: {email}"
+        ):
+            customer_api_info = self.customer_helper.create_customer(
+                email=email,
+                password=password
+            )
 
         with allure.step(
                 "Verify that API response username "
@@ -75,11 +84,18 @@ class TestCreateCustomers:
         email = generate_random_email()
         password = generate_random_password()
 
-        customer_api_info = self.customer_helper.create_customer(
-            email=email,
-            password=password
-        )
-        customer_db_info = self.customer_dao.get_customer_by_email(email)
+        with allure.step(
+            f"Create a customer with email: {email}"
+        ):
+            customer_api_info = self.customer_helper.create_customer(
+                email=email,
+                password=password
+            )
+
+        with allure.step(
+            f"Get a customer from DB with email: {email}"
+        ):
+            customer_db_info = self.customer_dao.get_customer_by_email(email)
 
         with allure.step(
             f"Get a '{email}' customer ID returned by DB"
@@ -133,7 +149,8 @@ class TestCreateCustomers:
             )
 
         with allure.step(
-            "Verify that the message in API response is correct"
+            "Verify that the message in API response is correct: "
+            f"{customer_api_info['message']=}"
         ):
             assert customer_api_info["message"] == \
                 'An account is already registered with your email address. ' \
