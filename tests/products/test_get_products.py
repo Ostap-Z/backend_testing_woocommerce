@@ -1,5 +1,3 @@
-from datetime import datetime, timedelta
-
 import allure
 import pytest
 
@@ -43,29 +41,31 @@ class TestGetProducts:
         severity_level=allure.severity_level.CRITICAL
     )
     @pytest.mark.tcid34
-    def test_get_product_by_id(self):
-        with allure.step("Get a product from DB"):
-            product_db = self.products_dao.get_random_product()
-
+    def test_get_product_by_id(
+        self,
+        random_product_from_db,
+        product_by_id_api
+    ):
         with allure.step(
-            f"Get a product 'ID' from DB: {product_db['ID']}"
+            "Get a product 'ID' from DB: "
+            f"{random_product_from_db['ID']}"
         ):
-            product_id_db = product_db["ID"]
+            product_id_db = random_product_from_db["ID"]
 
         with allure.step(
             "Get a product 'post_title' from DB: "
-            f"{product_db['post_title']}"
+            f"{random_product_from_db['post_title']}"
         ):
-            product_db_name = product_db["post_title"]
+            product_db_name = random_product_from_db["post_title"]
 
         with allure.step(
-            f"Get a product name with id '{product_id_db}' from API response"
+            "Get a product name with id "
+            f"{product_id_db} from API response"
         ):
-            product_api_name = \
-                self.products_helper.get_product_by_id(product_id_db)["name"]
+            product_api_name = product_by_id_api["name"]
 
         with allure.step(
-            f"Verify that the product name with id '{product_id_db}' "
+            f"Verify that the product name with id {product_id_db} "
             "in API response equals to the post_title in DB: "
             f"{product_api_name=}, {product_db_name=}"
         ):
@@ -88,29 +88,25 @@ class TestGetProducts:
         severity_level=allure.severity_level.NORMAL
     )
     @pytest.mark.tcid38
-    def test_get_products_with_filter_after(self):
-        days_from_today = 30
-        _after_created_date = \
-            datetime.now().replace(microsecond=0) \
-            - timedelta(days=days_from_today)
-        after_created_date = _after_created_date.isoformat()
-        payload = {
-            "after": after_created_date
-        }
-
+    def test_get_products_with_filter_after(
+        self,
+        payload_after_parameter
+    ):
         with allure.step(
             "Get a products list after date from API: "
-            f"{after_created_date}"
+            f"{payload_after_parameter}"
         ):
             products_api = self.products_helper\
-                .get_products_with_params(payload)
+                .get_products_with_params(payload_after_parameter)
 
         with allure.step(
             "Get a list of products after date from DB: "
-            f"{after_created_date}"
+            f"{payload_after_parameter}"
         ):
-            products_db = self.products_dao\
-                .get_products_after_given_date(payload["after"])
+            products_db = \
+                self.products_dao\
+                    .get_products_after_given_date(
+                     payload_after_parameter["after"])
 
         with allure.step(
             "Sort taken IDs from API and DB in ascending order"
