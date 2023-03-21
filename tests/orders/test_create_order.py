@@ -3,9 +3,7 @@ import random
 import pytest
 import allure
 
-from src.dao.products_dao import ProductsDAO
 from src.dao.orders_dao import OrdersDAO
-from src.helpers.customers_helper import CustomerHelper
 from src.helpers.orders_helper import OrdersHelper
 
 
@@ -13,10 +11,8 @@ from src.helpers.orders_helper import OrdersHelper
 @allure.feature("Create orders")
 @pytest.mark.orders
 class TestCreateOrder:
-    product_dao = ProductsDAO()
     orders_dao = OrdersDAO()
     orders_helper = OrdersHelper()
-    customers_helper = CustomerHelper()
 
     @allure.title(
         "Verify that the guest user has an opportunity to create an order"
