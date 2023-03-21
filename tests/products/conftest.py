@@ -1,9 +1,11 @@
+import random
 from datetime import datetime, timedelta
 
 
 import pytest
 
 from src.helpers.products_helper import ProductsHelper
+from src.utilities.generator_utility import generate_random_string
 
 
 @pytest.fixture
@@ -25,4 +27,13 @@ def payload_after_parameter():
     after_created_date = _after_created_date.isoformat()
     return {
         "after": after_created_date
+    }
+
+
+@pytest.fixture
+def payload_simple_product():
+    return {
+        "name": generate_random_string(20),
+        "type": "simple",
+        "regular_price": str(random.randint(1, 999_999))
     }
