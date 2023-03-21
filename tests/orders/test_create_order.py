@@ -25,29 +25,15 @@ class TestCreateOrder:
         severity_level=allure.severity_level.CRITICAL
     )
     @pytest.mark.tcid48
-    def test_create_order_guest_user(self):
-        with allure.step("Get random product from DB"):
-            product_db = self.product_dao.get_random_product()
-
+    def test_create_order_guest_user(
+        self,
+        additional_args
+    ):
         with allure.step(
-            f"Get a product id: {product_db['ID']}"
-        ):
-            product_id = product_db["ID"]
-
-        product_info = {
-            "line_items": [
-                {
-                    "product_id": product_id,
-                    "quantity": random.randint(1, 10)
-                }
-            ]
-        }
-
-        with allure.step(
-          f"Create an order with additional args: {product_info}"
+            f"Create an order with additional args: {additional_args}"
         ):
             order = self.orders_helper.create_order(
-                additional_args=product_info
+                additional_args=additional_args
             )
 
         with allure.step(
@@ -74,40 +60,27 @@ class TestCreateOrder:
         severity_level=allure.severity_level.CRITICAL
     )
     @pytest.mark.tcid49
-    def test_create_order_products_quantity(self):
-        with allure.step("Get random product from DB"):
-            product_db = self.product_dao.get_random_product()
-
-        with allure.step(
-            f"Get a product id: {product_db['ID']}"
-        ):
-            product_id = product_db["ID"]
-
-        product_info = {
-            "line_items": [
-                {
-                    "product_id": product_id,
-                    "quantity": random.randint(1, 10)
-                }
-            ]
-        }
-
+    def test_create_order_products_quantity(
+        self,
+        additional_args
+    ):
         with allure.step(
             "Get a 'line_items' length based on the prepared data: "
-            f"{len(product_info['line_items'])}"
+            f"{len(additional_args['line_items'])}"
         ):
-            product_amount = len(product_info['line_items'])
+            product_amount = \
+                len(additional_args['line_items'])
 
         with allure.step(
-          f"Create an order with additional args: {product_info}"
+          f"Create an order with additional args: {additional_args}"
         ):
             order = self.orders_helper.create_order(
-                additional_args=product_info
+                additional_args=additional_args
             )
 
         with allure.step(
             "Get a 'line_items' length based on the API response: "
-            f"{len(product_info['line_items'])}"
+            f"{len(order['line_items'])}"
         ):
             product_amount_response = len(order['line_items'])
 
@@ -130,29 +103,16 @@ class TestCreateOrder:
         severity_level=allure.severity_level.CRITICAL
     )
     @pytest.mark.tcid50
-    def test_verify_created_order_exist_db(self):
-        with allure.step("Get random product from DB"):
-            product_db = self.product_dao.get_random_product()
-
+    def test_verify_created_order_exist_db(
+        self,
+        random_product_from_db,
+        additional_args
+    ):
         with allure.step(
-            f"Get a product id from random product: {product_db['ID']}"
-        ):
-            product_id = product_db["ID"]
-
-        product_info = {
-            "line_items": [
-                {
-                    "product_id": product_id,
-                    "quantity": random.randint(1, 10)
-                }
-            ]
-        }
-
-        with allure.step(
-          f"Create an order with additional args: {product_info}"
+          f"Create an order with additional args: {additional_args}"
         ):
             order = self.orders_helper.create_order(
-                additional_args=product_info
+                additional_args=additional_args
             )
 
         with allure.step(
@@ -192,15 +152,16 @@ class TestCreateOrder:
             product_id_db = int(line_details["_product_id"])
 
         with allure.step(
-          "Verify that the 'product_id' in API Response "
-          f"the same as in DB: {product_id_db=}, {product_id=}"
+          "Verify that the 'product_id' in API Response the same as in DB: "
+          f"{product_id_db=}, {random_product_from_db['ID']=}"
         ):
-            assert product_id_db == product_id, \
+            assert product_id_db == random_product_from_db["ID"], \
                 "\nActual result:" \
                 "\n\tProduct_id in DB doesn't match a product_id in API: " \
-                f"{product_id_db=}, {product_id=}" \
+                f"{product_id_db=}, {random_product_from_db['ID']=}" \
                 "\nExpected result:" \
-                f"\n\tProduct_id in DB should be equaled to {product_id}"
+                "\n\tProduct_id in DB should be equaled to " \
+                f"{random_product_from_db['ID']}"
 
     @allure.title(
         "Verify that the new user has an opportunity to create an order"
@@ -209,24 +170,20 @@ class TestCreateOrder:
         severity_level=allure.severity_level.CRITICAL
     )
     @pytest.mark.tcid51
-    def test_create_order_new_user(self):
-        with allure.step("Get random product from DB"):
-            product_db = self.product_dao.get_random_product()
+    def test_create_order_new_user(
+        self,
+        random_product_from_db,
+        customer
+    ):
+        with allure.step(
+            f"Get a product id: {random_product_from_db['ID']}"
+        ):
+            product_id = random_product_from_db["ID"]
 
         with allure.step(
-            f"Get a product id: {product_db['ID']}"
+            f"Get a new created customer id: {customer['id']}"
         ):
-            product_id = product_db["ID"]
-
-        with allure.step(
-          "Create a new customer"
-        ):
-            new_customer = self.customers_helper.create_customer()
-
-        with allure.step(
-            f"Get a new created customer id: {new_customer['id']}"
-        ):
-            new_customer_id = new_customer["id"]
+            new_customer_id = customer["id"]
 
         product_info = {
             "line_items": [
