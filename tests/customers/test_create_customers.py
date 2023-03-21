@@ -24,9 +24,12 @@ class TestCreateCustomers:
         severity_level=allure.severity_level.CRITICAL
     )
     @pytest.mark.tcid29
-    def test_create_customer_email(self):
-        email = generate_random_email()
-        password = generate_random_password()
+    def test_create_customer_email(
+        self,
+        customer_credentials
+    ):
+        email = customer_credentials["email"]
+        password = customer_credentials["password"]
 
         with allure.step(
             f"Create a customer with email: {email}"
@@ -37,7 +40,8 @@ class TestCreateCustomers:
             )
 
         with allure.step(
-            f"Verify that API response email equals to the '{email}': "
+            "Verify that API response email "
+            f"equals to the {customer_credentials['email']}: "
             f"{customer_api_info['email']=}, {email=}"
         ):
             assert customer_api_info["email"] == email, \
@@ -51,9 +55,12 @@ class TestCreateCustomers:
         severity_level=allure.severity_level.CRITICAL
     )
     @pytest.mark.tcid30
-    def test_create_customer_username(self):
-        email = generate_random_email()
-        password = generate_random_password()
+    def test_create_customer_username(
+        self,
+        customer_credentials
+    ):
+        email = customer_credentials["email"]
+        password = customer_credentials["password"]
 
         with allure.step(
             f"Create a customer with email: {email}"
@@ -80,9 +87,12 @@ class TestCreateCustomers:
         severity_level=allure.severity_level.CRITICAL
     )
     @pytest.mark.tcid31
-    def test_created_customer_exists_in_db(self):
-        email = generate_random_email()
-        password = generate_random_password()
+    def test_created_customer_exists_in_db(
+        self,
+        customer_credentials
+    ):
+        email = customer_credentials["email"]
+        password = customer_credentials["password"]
 
         with allure.step(
             f"Create a customer with email: {email}"
@@ -127,24 +137,17 @@ class TestCreateCustomers:
         severity_level=allure.severity_level.NORMAL
     )
     @pytest.mark.tcid47
-    def test_create_customer_with_existing_email(self):
+    def test_create_customer_with_existing_email(
+        self,
+        customer_existing_credentials
+    ):
         with allure.step(
-            "Get the existing customer email from DB"
-        ):
-            existing_customer_email = \
-                self.customer_dao.get_random_customer()["user_email"]
-
-        payload = {
-            "email": existing_customer_email,
-            "password": generate_random_password()
-        }
-
-        with allure.step(
-            f"Create a customer with existing '{payload['email']}' email"
+            "Create a customer with existing email: "
+            f"{customer_existing_credentials['email']}"
         ):
             customer_api_info = self.requests_helper.post(
                 endpoint="customers",
-                payload=payload,
+                payload=customer_existing_credentials,
                 expected_status_code=400
             )
 
