@@ -1,9 +1,6 @@
 import pytest
 import allure
 
-from src.utilities.generator_utility import \
-    generate_random_email, \
-    generate_random_password
 from src.helpers.customers_helper import CustomerHelper
 from src.dao.customers_dao import CustomersDAO
 from src.utilities.requests_utility import RequestsUtility
