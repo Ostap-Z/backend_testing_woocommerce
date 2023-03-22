@@ -32,3 +32,21 @@ def additional_args(random_product_from_db):
 def order():
     orders_helper = OrdersHelper()
     return orders_helper.create_order()
+
+
+@pytest.fixture(
+    params=[
+        "pending",
+        "processing",
+        "on-hold",
+        "completed",
+        "cancelled",
+        "refunded",
+        "failed",
+        "checkout-draft"
+    ]
+)
+def order_payload_status(request):
+    return {
+        "status": request.param
+    }
