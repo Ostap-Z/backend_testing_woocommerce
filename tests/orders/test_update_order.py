@@ -22,21 +22,44 @@ class TestUpdateOrder:
         order,
         order_payload_status
     ):
-        order_id = order["id"]
-        status = order_payload_status["status"]
+        with allure.step(
+          f"Get an order id: {order['id']}"
+        ):
+            order_id = order["id"]
 
-        self.orders_helper.update_order(
-            order_id=order_id,
-            payload=order_payload_status
-        )
-        updated_status = \
-            self.orders_helper \
-            .retrieve_order_by_order_id(order_id=order_id)["status"]
+        with allure.step(
+          "Get an order expected status: "
+          f"{order_payload_status['status']}"
+        ):
+            status = order_payload_status["status"]
 
-        assert updated_status == status, \
-            "\nActual result:" \
-            f"\n\tStatus of the order " \
-            f"has not been updated with {status} status" \
-            f"\n\tActual status: {updated_status}" \
-            "\nExpected result:" \
-            f"\n\tStatus should be updated with the {status} status"
+        with allure.step(
+            f"Update an order {order_id} "
+            f"with payload: {order_payload_status}"
+        ):
+            self.orders_helper.update_order(
+                order_id=order_id,
+                payload=order_payload_status
+            )
+
+        with allure.step(
+          "Get an order updated status"
+        ):
+            updated_status = \
+                self.orders_helper \
+                .retrieve_order_by_order_id(
+                    order_id=order_id
+                )["status"]
+
+        with allure.step(
+            "Verify that the status of an order "
+            f"has been updated with {status} status: "
+            f"{updated_status=}, {status=}"
+        ):
+            assert updated_status == status, \
+                "\nActual result:" \
+                f"\n\tStatus of the order " \
+                f"has not been updated with {status} status" \
+                f"\n\tActual status: {updated_status}" \
+                "\nExpected result:" \
+                f"\n\tStatus should be updated with the {status} status"
