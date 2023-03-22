@@ -106,4 +106,5 @@ class RequestsUtility:
         ):
             assert response.status_code == expected_status_code, \
                 f"\nActual status code: {response.status_code}" \
+                f"\nActual response: {response.json()}" \
                 f"\nExpected status code: {expected_status_code}"
