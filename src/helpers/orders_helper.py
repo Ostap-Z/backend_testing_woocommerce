@@ -60,6 +60,14 @@ class OrdersHelper:
             payload=payload
         )
 
+    def retrieve_order_by_order_id(
+        self,
+        order_id
+    ):
+        return self.request_utility.get(
+            endpoint=f"orders/{order_id}"
+        )
+
     @staticmethod
     def check_object_type(
             obj,
