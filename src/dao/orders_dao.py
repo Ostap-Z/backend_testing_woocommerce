@@ -6,10 +6,6 @@ from src.utilities.database_utility import DatabaseUtility
 class OrdersDAO:
 
     def __init__(self):
-        # self.__db_helper = DatabaseUtility(
-        #     host="localhost",
-        #     port=10006
-        # )
         self.__db_helper = DatabaseUtility()
 
     def get_order_items_by_order_id(
