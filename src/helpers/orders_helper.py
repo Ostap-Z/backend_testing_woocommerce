@@ -55,18 +55,24 @@ class OrdersHelper:
         order_id,
         payload
     ):
-        return self.request_utility.put(
-            endpoint=f"orders/{order_id}",
-            payload=payload
-        )
+        with allure.step(
+            f"Update an order {order_id} with payload: {payload}"
+        ):
+            return self.request_utility.put(
+                endpoint=f"orders/{order_id}",
+                payload=payload
+            )
 
     def retrieve_order_by_order_id(
         self,
         order_id
     ):
-        return self.request_utility.get(
-            endpoint=f"orders/{order_id}"
-        )
+        with allure.step(
+          f"Get a specific order with order_id: {order_id}"
+        ):
+            return self.request_utility.get(
+                endpoint=f"orders/{order_id}"
+            )
 
     @staticmethod
     def check_object_type(
