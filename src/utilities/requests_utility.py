@@ -72,6 +72,29 @@ class RequestsUtility:
         self.assert_status_code(response, expected_status_code)
         return response.json()
 
+    def put(
+            self,
+            endpoint,
+            payload=None,
+            headers=None,
+            expected_status_code=200
+    ):
+        url = f"{self.__base_url}{endpoint}"
+        if not headers:
+            headers = {
+                "Content-Type": "application/json"
+            }
+
+        response = requests.put(
+            url=url,
+            data=json.dumps(payload),
+            headers=headers,
+            auth=self.__auth
+        )
+
+        self.assert_status_code(response, expected_status_code)
+        return response.json()
+
     @staticmethod
     def assert_status_code(
             response,
