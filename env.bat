@@ -1,0 +1,8 @@
+set MACHINE=machine1
+set WP_HOST=ampps
+
+set WC_KEY=ck_8d402762f2b4224d0905ef786cab0dd4ed636c4e
+set WC_SECRET=cs_eee82b76f7a499e6e58a73d9b88c58932f8fca38
+
+set DB_USER=root
+set DB_PASSWORD=root
