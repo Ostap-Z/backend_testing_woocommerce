@@ -85,12 +85,16 @@ class RequestsUtility:
                 "Content-Type": "application/json"
             }
 
-        response = requests.put(
-            url=url,
-            data=json.dumps(payload),
-            headers=headers,
-            auth=self.__auth
-        )
+        with allure.step(
+            "Do PUT call with data: "
+            f"{url=}, {payload=}, {headers=}"
+        ):
+            response = requests.put(
+                url=url,
+                data=json.dumps(payload),
+                headers=headers,
+                auth=self.__auth
+            )
 
         self.assert_status_code(response, expected_status_code)
         return response.json()
