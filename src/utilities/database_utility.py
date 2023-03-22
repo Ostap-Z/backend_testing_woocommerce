@@ -1,38 +1,80 @@
+import os
+
 import allure
 import pymysql.cursors
 
 from .credentials_utility import CredentialsUtility
+from src.configs.hosts_config import DB_HOST
 
 
 class DatabaseUtility:
+    _credentials_helper = CredentialsUtility()
 
-    def __init__(
-            self,
-            host,
-            port,
-            timeout=20
-    ):
-        self.__host = host
-        self.__port = port
+    def __init__(self, timeout=15):
         self.timeout = timeout
-        self.__credentials_helper = CredentialsUtility()
-        self.__credentials = self.__credentials_helper.get_db_credentials()
+
+        if not (
+                os.environ["MACHINE"],
+                os.environ["WP_HOST"]
+        ):
+            raise Exception(
+                "Environment variable 'MACHINE' "
+                "and 'WP_HOST' should be set"
+            )
+        self.__machine = os.environ["MACHINE"]
+        self.__wp_host = os.environ["WP_HOST"]
+
+        if self.__machine == "docker" and self.__wp_host == "local":
+            raise Exception(
+                "Can't run tests in docker when 'WP_HOST'=local"
+            )
+
+        self.__env = os.environ.get("ENV", "dev")
+        self.__host = \
+            DB_HOST[self.__machine][self.__env]["host"]
+        self.__socket = \
+            DB_HOST[self.__machine][self.__env]["socket"]
+        self.__port = \
+            DB_HOST[self.__machine][self.__env]["port"]
+        self.__database = \
+            DB_HOST[self.__machine][self.__env]["database"]
+        self.__table_prefix = \
+            DB_HOST[self.__machine][self.__env]["table_prefix"]
+        self.__user = \
+            self._credentials_helper.get_db_credentials()["db_user"]
+        self.__password = \
+            self._credentials_helper.get_db_credentials()["db_password"]
 
     def create_connection(self):
-        with allure.step(
-            "Create connection with DB: "
-            f"db_host={self.__host}, "
-            f"db_port={self.__port}, "
-            f"db_connection_timeout={self.timeout}"
-        ):
-            return pymysql.connect(
+        if self.__wp_host == "local":
+            connection = pymysql.connect(
+                host=self.__host,
+                unix_socket=self.__socket,
+                user=self.__user,
+                password=self.__password,
+                connect_timeout=self.timeout,
+                cursorclass=pymysql.cursors.DictCursor
+            )
+        elif self.__wp_host == "ampps":
+            connection = pymysql.connect(
                 host=self.__host,
                 port=self.__port,
-                user=self.__credentials["db_user"],
-                password=self.__credentials["db_password"],
-                cursorclass=pymysql.cursors.DictCursor,
-                connect_timeout=self.timeout
+                user=self.__user,
+                password=self.__password,
+                connect_timeout=self.timeout,
+                cursorclass=pymysql.cursors.DictCursor
             )
+        else:
+            raise Exception(
+                f"Unknown 'WP_HOST': {os.environ['WP_HOST']}. "
+                "Available hosts: local, ampps"
+            )
+
+        with allure.step(
+            "Create a connection to the DB: "
+            f"{self.__host=}, {self.__port=}, {self.__socket=}"
+        ):
+            return connection
 
     def execute_select(
             self,
