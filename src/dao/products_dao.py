@@ -8,10 +8,11 @@ from src.utilities.database_utility import DatabaseUtility
 class ProductsDAO:
 
     def __init__(self):
-        self.__db_helper = DatabaseUtility(
-            host="localhost",
-            port=10006
-        )
+        # self.__db_helper = DatabaseUtility(
+        #     host="localhost",
+        #     port=10006
+        # )
+        self.__db_helper = DatabaseUtility()
 
     def get_random_product(self):
         sql_query = """
