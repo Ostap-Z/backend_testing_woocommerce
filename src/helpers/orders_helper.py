@@ -50,6 +50,16 @@ class OrdersHelper:
                 expected_status_code=201
             )
 
+    def update_order(
+        self,
+        order_id,
+        payload
+    ):
+        return self.request_utility.put(
+            endpoint=f"orders/{order_id}",
+            payload=payload
+        )
+
     @staticmethod
     def check_object_type(
             obj,
