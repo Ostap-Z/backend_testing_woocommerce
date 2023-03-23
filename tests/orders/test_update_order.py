@@ -124,3 +124,60 @@ class TestUpdateOrder:
                 "\nExpected result:" \
                 "\n\tMessage in API response " \
                 f"should be {expected_response_message}"
+
+    @allure.title(
+        "Verify that the user has an opportunity "
+        "to update the order customer note"
+    )
+    @allure.severity(
+        severity_level=allure.severity_level.NORMAL
+    )
+    @pytest.mark.tcid56
+    def test_update_order_customer_note(
+        self,
+        order
+    ):
+        with allure.step(
+            "Generate a random customer note"
+        ):
+            random_customer_note = generate_random_string(150)
+
+        with allure.step(
+          f"Get an order id: {order['id']}"
+        ):
+            order_id = order["id"]
+
+        payload = {
+            "customer_note": random_customer_note
+        }
+
+        with allure.step(
+            "Update an order with customer note: "
+            f"{payload['customer_note']}"
+        ):
+            self.orders_helper.update_order(
+                order_id=order_id,
+                payload=payload
+            )
+
+        with allure.step(
+          f"Retrieve an order with id {order_id}"
+        ):
+            updated_order = \
+                self\
+                .orders_helper\
+                .retrieve_order_by_order_id(
+                    order_id
+                )
+
+        with allure.step(
+            f"Get a customer note from the order {order_id}: "
+            f"{updated_order['customer_note']}"
+        ):
+            updated_customer_note = updated_order["customer_note"]
+
+        with allure.step(
+            f"Verify that the customer note "
+            f"has been updated with {random_customer_note}"
+        ):
+            assert updated_customer_note == random_customer_note
