@@ -68,7 +68,9 @@ class TestUpdateOrder:
                 f"\n\tStatus should be updated with the {status} status"
 
     @allure.title(
-        "Verify that the created order status could be updated"
+        "Verify that the API returns a correct message "
+        "when the user set invalid status parameter "
+        "while updating an order"
     )
     @allure.severity(
         severity_level=allure.severity_level.NORMAL
