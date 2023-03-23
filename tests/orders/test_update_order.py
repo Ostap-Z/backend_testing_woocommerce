@@ -180,4 +180,11 @@ class TestUpdateOrder:
             f"Verify that the customer note "
             f"has been updated with {random_customer_note}"
         ):
-            assert updated_customer_note == random_customer_note
+            assert updated_customer_note == random_customer_note, \
+                "\nActual result:" \
+                f"\n\tCustomer note for the order {order_id} " \
+                f"has not been updated" \
+                f"\n\tActual customer note: {updated_customer_note}" \
+                "\nExpected result:" \
+                f"\n\tCustomer note for the order {order_id} " \
+                f"should be updated with {random_customer_note}"
