@@ -70,14 +70,25 @@ class TestUpdateProduct:
                 f"with {regular_price_payload}"
 
     @allure.title(
-        "Verify that the update 'sale_price > 0' sets 'on_sale'=True"
+        "Verify the 'on_sale' status equals to {expected} "
+        "after updating a 'sale_price' with {test_input!r}"
     )
     @allure.severity(
         severity_level=allure.severity_level.CRITICAL
     )
     @pytest.mark.tcid58
+    @pytest.mark.parametrize(
+        "test_input,expected",
+        [
+            ("1", True),
+            ("0", False),
+            (" ", False)
+        ]
+    )
     def test_update_product_sale_price(
         self,
+        test_input,
+        expected,
         simple_product
     ):
         with allure.step(
@@ -86,7 +97,7 @@ class TestUpdateProduct:
             product_id = simple_product["id"]
 
         payload = {
-            "sale_price": "1"
+            "sale_price": test_input
         }
 
         with allure.step(
@@ -110,14 +121,14 @@ class TestUpdateProduct:
             product_on_sale = updated_product['on_sale']
 
         with allure.step(
-            "Verify that the on_sale status is True"
+            f"Verify that the on_sale status is {expected}"
         ):
-            assert product_on_sale, \
+            assert product_on_sale == expected, \
                 "\nActual result:" \
-                "\n\t'on_sale' parameter is not True " \
-                "after updating with 'sale_price > 0'" \
+                f"\n\t'on_sale' parameter is not {expected} " \
+                f"after updating with {test_input}" \
                 f"\n\tActual 'on_sale' status: {product_on_sale}" \
                 f"\n\tPayload: {payload}" \
                 f"\nExpected result:" \
-                f"\n\t'on_sale' parameter should ne equaled to true " \
-                f"after updating with 'sale_price > 0'"
+                f"\n\t'on_sale' parameter should ne equaled to {expected} " \
+                f"after updating with {test_input}"
