@@ -57,3 +57,16 @@ class ProductsHelper:
             f"{payload=}, {max_pages=}"
         ):
             return all_products
+
+    def update_product(
+        self,
+        product_id,
+        payload
+    ):
+        with allure.step(
+            f"Update the product {product_id} with payload: {payload}"
+        ):
+            return self.request_utility.put(
+                endpoint=f"products/{product_id}",
+                payload=payload
+            )
