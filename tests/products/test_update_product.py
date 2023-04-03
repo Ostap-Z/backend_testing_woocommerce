@@ -60,7 +60,14 @@ class TestUpdateProduct:
           "Verify that the price has been updated "
           f"with {regular_price_payload}"
         ):
-            assert updated_price == regular_price_payload
+            assert updated_price == regular_price_payload, \
+                "\nActual result:" \
+                "\n\t'price' parameter has not been updated " \
+                f"with {regular_price_payload}" \
+                f"\n\tActual price: {updated_price}" \
+                "\nExpected result:" \
+                "\n\t'price' parameter should be updated " \
+                f"with {regular_price_payload}"
 
     @allure.title(
         "Verify that the update 'sale_price > 0' sets 'on_sale'=True"
@@ -69,7 +76,7 @@ class TestUpdateProduct:
         severity_level=allure.severity_level.CRITICAL
     )
     @pytest.mark.tcid58
-    def test_update_product_price(
+    def test_update_product_sale_price(
         self,
         simple_product
     ):
