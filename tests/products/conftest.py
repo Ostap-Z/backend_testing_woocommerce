@@ -37,3 +37,11 @@ def payload_simple_product():
         "type": "simple",
         "regular_price": str(random.randint(1, 999_999))
     }
+
+
+@pytest.fixture
+def simple_product(payload_simple_product):
+    products_helper = ProductsHelper()
+    return products_helper.create_product(
+        payload=payload_simple_product
+    )
