@@ -130,5 +130,5 @@ class TestUpdateProduct:
                 f"\n\tActual 'on_sale' status: {product_on_sale}" \
                 f"\n\tPayload: {payload}" \
                 f"\nExpected result:" \
-                f"\n\t'on_sale' parameter should ne equaled to {expected} " \
+                f"\n\t'on_sale' parameter should be equaled to {expected} " \
                 f"after updating with {test_input}"
