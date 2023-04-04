@@ -48,7 +48,10 @@ class TestUpdateProduct:
         with allure.step(
             f"Get the updated product with id: {product_id}"
         ):
-            updated_product = self.products_helper.get_product_by_id(product_id)
+            updated_product = \
+                self.products_helper.get_product_by_id(
+                    product_id
+                )
 
         with allure.step(
             f"Get the price from updated product with id {product_id}: "
@@ -112,7 +115,10 @@ class TestUpdateProduct:
         with allure.step(
             f"Get the updated product with id: {product_id}"
         ):
-            updated_product = self.products_helper.get_product_by_id(product_id)
+            updated_product = \
+                self.products_helper.get_product_by_id(
+                    product_id
+                )
 
         with allure.step(
             "Get the on_sale status from updated product "
