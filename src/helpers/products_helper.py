@@ -12,7 +12,10 @@ class ProductsHelper:
             self,
             product_id
     ):
-        return self.request_utility.get(f"products/{product_id}")
+        with allure.step(
+            f"Get a specific product with id: {product_id}"
+        ):
+            return self.request_utility.get(f"products/{product_id}")
 
     def create_product(
             self,
