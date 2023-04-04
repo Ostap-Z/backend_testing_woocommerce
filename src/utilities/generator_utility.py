@@ -50,7 +50,7 @@ def generate_random_string(
         )
     )
     if prefix:
-        random_string = prefix + random
+        random_string = prefix + random_string
     if suffix:
         random_string = random_string + suffix
 
