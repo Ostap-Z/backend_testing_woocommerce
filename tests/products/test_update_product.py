@@ -6,6 +6,9 @@ import pytest
 from src.helpers.products_helper import ProductsHelper
 
 
+@allure.suite("Products endpoint")
+@allure.feature("Update products")
+@pytest.mark.products
 class TestUpdateProduct:
     products_helper = ProductsHelper()
 
