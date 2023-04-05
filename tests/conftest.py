@@ -14,7 +14,16 @@ def random_product_from_db():
 @pytest.fixture
 def customer():
     customer_helper = CustomerHelper()
-    return customer_helper.create_customer()
+    customer = customer_helper.create_customer()
+    customer_id = customer['id']
+    payload = {
+        "force": True
+    }
+    yield customer
+    customer_helper.delete_customer(
+        customer_id=customer_id,
+        payload=payload
+    )
 
 
 @pytest.fixture
