@@ -20,11 +20,11 @@ class RequestsUtility:
         )
 
     def post(
-            self,
-            endpoint,
-            payload=None,
-            headers=None,
-            expected_status_code=200
+        self,
+        endpoint,
+        payload=None,
+        headers=None,
+        expected_status_code=200
     ):
         url = f"{self.__base_url}{endpoint}"
         if not headers:
@@ -46,11 +46,11 @@ class RequestsUtility:
         return response.json()
 
     def get(
-            self,
-            endpoint,
-            payload=None,
-            headers=None,
-            expected_status_code=200
+        self,
+        endpoint,
+        payload=None,
+        headers=None,
+        expected_status_code=200
     ):
         url = f"{self.__base_url}{endpoint}"
         if not headers:
@@ -73,11 +73,11 @@ class RequestsUtility:
         return response.json()
 
     def put(
-            self,
-            endpoint,
-            payload=None,
-            headers=None,
-            expected_status_code=200
+        self,
+        endpoint,
+        payload=None,
+        headers=None,
+        expected_status_code=200
     ):
         url = f"{self.__base_url}{endpoint}"
         if not headers:
@@ -90,6 +90,33 @@ class RequestsUtility:
             f"{url=}, {payload=}, {headers=}"
         ):
             response = requests.put(
+                url=url,
+                data=json.dumps(payload),
+                headers=headers,
+                auth=self.__auth
+            )
+
+        self.assert_status_code(response, expected_status_code)
+        return response.json()
+
+    def delete(
+        self,
+        endpoint,
+        payload=None,
+        headers=None,
+        expected_status_code=200
+    ):
+        url = f"{self.__base_url}{endpoint}"
+        if not headers:
+            headers = {
+                "Content-Type": "application/json"
+            }
+
+        with allure.step(
+            "Do DELETE call with data: "
+            f"{url=}, {payload=}, {headers=}"
+        ):
+            response = requests.delete(
                 url=url,
                 data=json.dumps(payload),
                 headers=headers,
