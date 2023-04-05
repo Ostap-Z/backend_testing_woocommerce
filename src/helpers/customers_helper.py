@@ -11,10 +11,10 @@ class CustomerHelper:
         self.request_utility = RequestsUtility()
 
     def create_customer(
-            self,
-            email=None,
-            password=None,
-            **kwargs
+        self,
+        email=None,
+        password=None,
+        **kwargs
     ):
         if not email:
             email = generate_random_email()
@@ -31,4 +31,18 @@ class CustomerHelper:
                 endpoint="customers",
                 payload=payload,
                 expected_status_code=201
+            )
+
+    def delete_customer(
+        self,
+        customer_id,
+        payload
+    ):
+        if "force" not in payload.keys():
+            payload.set_default("force", True)
+
+        with allure.step(f"Delete a customer with id: {customer_id}"):
+            return self.request_utility.delete(
+                endpoint=f"customers/{customer_id}",
+                payload=payload
             )
