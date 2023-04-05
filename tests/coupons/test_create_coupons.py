@@ -3,6 +3,7 @@ import pytest
 
 from src.helpers.coupons_helper import CouponsHelper
 from src.utilities.generator_utility import generate_random_string
+from src.utilities.requests_utility import RequestsUtility
 
 
 @allure.suite("Coupons endpoint")
@@ -10,6 +11,7 @@ from src.utilities.generator_utility import generate_random_string
 @pytest.mark.coupons
 class TestCreateCoupons:
     coupons_helper = CouponsHelper()
+    requests_utility = RequestsUtility()
 
     @allure.title(
         "Verify that the user can create a coupon "
@@ -73,3 +75,48 @@ class TestCreateCoupons:
                 "\n\tThe discount_type should be equaled " \
                 f"to the {expected} when the user creates a coupon " \
                 f"with {discount_type} discount_type"
+
+    @allure.title(
+        "Verify that the user can get a correct message "
+        "when creates a coupon with invalid discount_type"
+    )
+    @allure.severity(
+        severity_level=allure.severity_level.NORMAL
+    )
+    @pytest.mark.tcid60
+    def test_create_coupon_invalid_discount_type(self):
+        payload = {
+            "code": generate_random_string(10, prefix="off_"),
+            "discount_type": generate_random_string(5, prefix="invalid_")
+        }
+
+        with allure.step(
+            "Create a coupon with invalid discount_type: "
+            f"{payload['discount_type']}"
+        ):
+            coupon_response = self.requests_utility.post(
+                "coupons",
+                payload=payload,
+                expected_status_code=400
+            )
+        with allure.step(
+            "Get a error message from API response: "
+            f"{coupon_response['message']}"
+        ):
+            error_message = coupon_response["message"]
+
+        with allure.step(
+            "Verify that the error message is "
+            "'Invalid parameter(s): discount_type' "
+            "when a user creates a coupon "
+            f"with invalid '{payload['discount_type']}' discount_type"
+        ):
+            assert error_message == 'Invalid parameter(s): discount_type', \
+                "\nActual result:" \
+                "\n\tThe user got invalid error message " \
+                "when coupon with discount_type " \
+                f"{payload['discount_type']} has been created: " \
+                f"{error_message}" \
+                "\nExpected result:" \
+                "\n\tThe error message should be: " \
+                "Invalid parameter(s): discount_type"
