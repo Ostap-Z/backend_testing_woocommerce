@@ -1,4 +1,3 @@
-import allure
 import pytest
 
 from src.helpers.coupons_helper import CouponsHelper
