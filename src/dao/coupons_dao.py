@@ -10,7 +10,7 @@ class CouponsDAO:
 
     def get_coupon_by_id(self, coupon_id):
         sql_query = """
-        SELECT * FROM local.wp_posts 
+        SELECT * FROM local.wp_posts
         WHERE post_type = %s
         AND ID = %s;
         """
