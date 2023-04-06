@@ -35,3 +35,17 @@ class CouponsHelper:
             return self.request_utility.get(
                 f"coupons/{coupon_id}",
             )
+
+    def delete_coupon(
+        self,
+        coupon_id,
+        payload
+    ):
+        if "force" not in payload.keys():
+            payload.set_default("force", True)
+
+        with allure.step(f"Delete a coupon with id: {coupon_id}"):
+            return self.request_utility.delete(
+                endpoint=f"coupons/{coupon_id}",
+                payload=payload
+            )
