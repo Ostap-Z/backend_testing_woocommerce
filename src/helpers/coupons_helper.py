@@ -10,11 +10,14 @@ class CouponsHelper:
 
     def create_coupon(
         self,
-        payload
+        code,
+        **kwargs
     ):
+        payload = {
+            "code": code
+        } | kwargs
         with allure.step(
-            "Create coupon with data: "
-            f"endpoint='coupons', {payload=}"
+            f"Create a coupon with data: {payload=}"
         ):
             return self.request_utility.post(
                 "coupons",

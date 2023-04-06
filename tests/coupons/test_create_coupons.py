@@ -34,16 +34,12 @@ class TestCreateCoupons:
         discount_type,
         expected
     ):
-        payload = {
-            "code": generate_random_string(10, prefix="off_"),
-            "discount_type": discount_type
-        }
-
         with allure.step(
-            f"Create coupon with data: {payload}"
+            f"Create a coupon with discount_type: {discount_type}"
         ):
             coupon_response = self.coupons_helper.create_coupon(
-                payload=payload
+                code=generate_random_string(10, prefix="off_"),
+                discount_type=discount_type
             )
 
         with allure.step(
@@ -99,6 +95,7 @@ class TestCreateCoupons:
                 payload=payload,
                 expected_status_code=400
             )
+
         with allure.step(
             "Get a error message from API response: "
             f"{coupon_response['message']}"
