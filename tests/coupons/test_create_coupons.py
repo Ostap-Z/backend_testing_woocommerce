@@ -4,6 +4,7 @@ import pytest
 from src.helpers.coupons_helper import CouponsHelper
 from src.utilities.generator_utility import generate_random_string
 from src.utilities.requests_utility import RequestsUtility
+from src.dao.coupons_dao import CouponsDAO
 
 
 @allure.suite("Coupons endpoint")
@@ -12,6 +13,7 @@ from src.utilities.requests_utility import RequestsUtility
 class TestCreateCoupons:
     coupons_helper = CouponsHelper()
     requests_utility = RequestsUtility()
+    coupons_dao = CouponsDAO()
 
     @allure.title(
         "Verify that the user can create a coupon "
@@ -117,3 +119,43 @@ class TestCreateCoupons:
                 "\nExpected result:" \
                 "\n\tThe error message should be: " \
                 "Invalid parameter(s): discount_type"
+
+    @allure.title(
+        "Verify that the created coupon "
+        "is present in DB and has the correct ID"
+    )
+    @allure.severity(
+        severity_level=allure.severity_level.CRITICAL
+    )
+    @pytest.mark.tcid61
+    def test_created_coupon_exists_in_db(
+        self,
+        coupon
+    ):
+        with allure.step(
+            f"Get a coupon id from API response: {coupon['id']}"
+        ):
+            coupon_id_api = coupon["id"]
+
+        with allure.step(
+            f"Get a coupon from DB with id: {coupon_id_api}"
+        ):
+            coupon_db = self.coupons_dao.get_coupon_by_id(coupon_id_api)
+
+        with allure.step(
+            f"Get a coupon id from DB response: {coupon_db[0]['ID']}"
+        ):
+            coupon_id_db = coupon_db[0]["ID"]
+
+        with allure.step(
+            "Verify that the coupon id in DB "
+            "equals to the coupon id in API: "
+            f"{coupon_id_db=}, {coupon_id_api=}"
+        ):
+            assert coupon_id_db == coupon_id_api, \
+                "\nActual result:" \
+                f"\n\tCreated coupon by API with id {coupon_id_api} " \
+                f"has invalid id {coupon_id_db} in DB" \
+                "\nExpected result:" \
+                "\n\tCreated coupon should has " \
+                f"{coupon_id_api} coupon id in DB"
